@@ -5,7 +5,7 @@ abstract class Parser {
     return file.readAsLinesSync();
   }
 
-  static Map<String, String> parserXmlOrHtml(File file) {
+  static Map<String, String> parseXmlOrHtml(File file) {
     final map = <String, String>{};
     file.readAsLinesSync().forEach((element) {
       if (element.isNotEmpty) {
@@ -13,6 +13,18 @@ abstract class Parser {
         final endTag = element.substring(element.lastIndexOf('</'));
         final content = element.substring(startTag.length, element.lastIndexOf('</'));
         map.putIfAbsent('$startTag#$endTag', () => content);
+      }
+    });
+    return map;
+  }
+
+  static Map<String, String> parseJson(File file) {
+    final map = <String, String>{};
+    file.readAsLinesSync().forEach((element) {
+      if (element.isNotEmpty) {
+        final key = element.split(':')[0];
+        final value = element.split(':')[1];
+        map.putIfAbsent('$key:#', () => value.replaceAll("'", "").replaceAll('"', ''));
       }
     });
     return map;

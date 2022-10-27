@@ -347,11 +347,13 @@ class _MyHomePageState extends State<MyHomePage> {
                               ? InkWell(
                                   onTap: () {
                                     setState(() {
-                                      files[files.indexWhere((element) => e.language == element.language)] = e.copyWith(status: 2);
+                                      files[files.indexWhere((element) => e.language == element.language)] =
+                                          e.copyWith(status: 1);
                                     });
                                     _translateContent(_getParserFile(fileTypeSeleced), e.language).then((value) {
                                       if (value is List<String>) {
-                                        final fileDirectory = File("${e.filePath}\\${e.fileName}.${e.fileType.name.toLowerCase()}");
+                                        final fileDirectory =
+                                            File("${e.filePath}\\${e.fileName}_${e.language}.${e.fileType.name.toLowerCase()}");
                                         if (fileDirectory.existsSync()) {
                                           fileDirectory.deleteSync(recursive: true);
                                           fileDirectory.createSync(recursive: true);
@@ -360,7 +362,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       }
                                     });
                                     setState(() {
-                                      files[files.indexOf(e)] = e.copyWith(status: 1);
+                                      files[files.indexWhere((element) => e.language == element.language)] =
+                                          e.copyWith(status: 2);
                                     });
                                   },
                                   child: const Icon(
@@ -418,7 +421,11 @@ class _MyHomePageState extends State<MyHomePage> {
             }
             listStringConvert.add(result);
             if (listStringConvert.length == content.length) completer.complete(listStringConvert);
-          }, onError: (error, stackTrace) => print('Error: $error'));
+          }, onError: (err, stackTrace) {
+            setState(() {
+              error = err;
+            });
+          });
         }
       } catch (e) {
         setState(() {
@@ -437,10 +444,14 @@ class _MyHomePageState extends State<MyHomePage> {
             if (trans['sentences'] is List && trans['sentences'].isNotEmpty) {
               result = trans['sentences'][0]['trans'];
             }
-            final contentAdd = element.replaceFirst('#', result);
+            final contentAdd = element.replaceFirst('#', fileTypeSeleced == MyFileType.JSON ? '"$result"' : result);
             listStringConvert.add(contentAdd);
             if (listStringConvert.length == content.length) completer.complete(listStringConvert);
-          }, onError: (error, stackTrace) => print('Error: $error'));
+          }, onError: (err, stackTrace) {
+            setState(() {
+              error = err;
+            });
+          });
         }
       } catch (e) {
         setState(() {
@@ -499,15 +510,16 @@ class _MyHomePageState extends State<MyHomePage> {
     if (fileTypeSeleced == MyFileType.TXT) {
       return Parser.parserText(File(file.path ?? ''));
     } else if (fileTypeSeleced == MyFileType.XML || fileTypeSeleced == MyFileType.HTML) {
-      return Parser.parserXmlOrHtml(File(file.path ?? ''));
+      return Parser.parseXmlOrHtml(File(file.path ?? ''));
     } else {
-      return 'json';
+      return Parser.parseJson(File(file.path ?? ''));
     }
   }
 }
 
 class TranslateDirect {
-  final googleApi = 'https://translate.google.com/translate_a/single?client=gtx&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=sos&dt=ss&dt=t&otf=1&ssel=3&tsel=0&dj=1';
+  final googleApi =
+      'https://translate.google.com/translate_a/single?client=gtx&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=sos&dt=ss&dt=t&otf=1&ssel=3&tsel=0&dj=1';
   final dio = Dio();
   Future translate(String sl, String tl, String query) {
     Completer translateCompleter = Completer();
