@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     MyFileType.JSON,
     MyFileType.XML,
     MyFileType.HTML,
+    MyFileType.STRINGS,
   ];
   @override
   Widget build(BuildContext context) {
@@ -183,13 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   final FilePickerResult? result = await FilePicker.platform.pickFiles(
                     type: FileType.custom,
                     allowMultiple: false,
-                    allowedExtensions: [
-                      'xml',
-                      'txt',
-                      'html',
-                      'dat',
-                      'doc',
-                    ],
+                    allowedExtensions: ['xml', 'txt', 'html', 'dat', 'doc', 'strings'],
                   );
                   if (result == null) {
                     setState(() {
@@ -347,23 +342,20 @@ class _MyHomePageState extends State<MyHomePage> {
                               ? InkWell(
                                   onTap: () {
                                     setState(() {
-                                      files[files.indexWhere((element) => e.language == element.language)] =
-                                          e.copyWith(status: 1);
+                                      files[files.indexWhere((element) => e.language == element.language)] = e.copyWith(status: 1);
                                     });
                                     _translateContent(_getParserFile(fileTypeSeleced), e.language).then((value) {
                                       if (value is List<String>) {
-                                        final fileDirectory =
-                                            File("${e.filePath}\\${e.fileName}_${e.language}.${e.fileType.name.toLowerCase()}");
+                                        final fileDirectory = File("${e.filePath}\\${e.fileName}_${e.language}.${e.fileType.name.toLowerCase()}");
                                         if (fileDirectory.existsSync()) {
                                           fileDirectory.deleteSync(recursive: true);
                                           fileDirectory.createSync(recursive: true);
                                         }
                                         fileDirectory.writeAsStringSync(value.join("\n"));
                                       }
-                                    });
-                                    setState(() {
-                                      files[files.indexWhere((element) => e.language == element.language)] =
-                                          e.copyWith(status: 2);
+                                      setState(() {
+                                        files[files.indexWhere((element) => e.language == element.language)] = e.copyWith(status: 2);
+                                      });
                                     });
                                   },
                                   child: const Icon(
@@ -444,7 +436,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (trans['sentences'] is List && trans['sentences'].isNotEmpty) {
               result = trans['sentences'][0]['trans'];
             }
-            final contentAdd = element.replaceFirst('#', fileTypeSeleced == MyFileType.JSON ? '"$result"' : result);
+            final contentAdd = element.replaceFirst('#', fileTypeSeleced == MyFileType.JSON || fileTypeSeleced == MyFileType.STRINGS ? '"$result"' : result);
             listStringConvert.add(contentAdd);
             if (listStringConvert.length == content.length) completer.complete(listStringConvert);
           }, onError: (err, stackTrace) {
@@ -511,8 +503,10 @@ class _MyHomePageState extends State<MyHomePage> {
       return Parser.parserText(File(file.path ?? ''));
     } else if (fileTypeSeleced == MyFileType.XML || fileTypeSeleced == MyFileType.HTML) {
       return Parser.parseXmlOrHtml(File(file.path ?? ''));
-    } else {
+    } else if (fileTypeSeleced == MyFileType.JSON) {
       return Parser.parseJson(File(file.path ?? ''));
+    } else {
+      return Parser.parseStrings(File(file.path ?? ''));
     }
   }
 }

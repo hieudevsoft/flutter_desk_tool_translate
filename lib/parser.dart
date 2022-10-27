@@ -29,4 +29,16 @@ abstract class Parser {
     });
     return map;
   }
+
+  static Map<String, String> parseStrings(File file) {
+    final map = <String, String>{};
+    file.readAsLinesSync().forEach((element) {
+      if (element.isNotEmpty && element.contains('=')) {
+        final key = element.split('=')[0];
+        final value = element.split('=')[1];
+        map.putIfAbsent('$key:#', () => value.replaceAll("'", "").replaceAll('"', ''));
+      }
+    });
+    return map;
+  }
 }

@@ -29,4 +29,5 @@ enum MyFileType {
   XML,
   HTML,
   IDLE,
+  STRINGS,
 }
