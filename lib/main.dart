@@ -436,7 +436,14 @@ class _MyHomePageState extends State<MyHomePage> {
             if (trans['sentences'] is List && trans['sentences'].isNotEmpty) {
               result = trans['sentences'][0]['trans'];
             }
-            final contentAdd = element.replaceFirst('#', fileTypeSeleced == MyFileType.JSON || fileTypeSeleced == MyFileType.STRINGS ? '"$result"' : result);
+            final contentAdd = element.replaceFirst(
+              '#',
+              fileTypeSeleced == MyFileType.JSON
+                  ? '"$result"'
+                  : fileTypeSeleced == MyFileType.STRINGS
+                      ? '"$result";'
+                      : result,
+            );
             listStringConvert.add(contentAdd);
             if (listStringConvert.length == content.length) completer.complete(listStringConvert);
           }, onError: (err, stackTrace) {
