@@ -24,7 +24,8 @@ abstract class Parser {
       if (element.isNotEmpty) {
         final key = element.split(':')[0];
         final value = element.split(':')[1];
-        map.putIfAbsent('$key:#', () => value.replaceAll("'", "").replaceAll('"', ''));
+        final valuePush = value.substring(0, value.length - 1);
+        map.putIfAbsent('$key:#', () => valuePush.replaceFirst("'", "").replaceFirst('"', ''));
       }
     });
     return map;
@@ -37,7 +38,7 @@ abstract class Parser {
         final key = element.split('=')[0];
         final value = element.split('=')[1];
         final indexOfComma = element.split('=')[1].lastIndexOf(';');
-        map.putIfAbsent('$key = #', () => value.substring(0, indexOfComma).replaceAll("'", "").replaceAll('"', ''));
+        map.putIfAbsent('$key = #', () => value.substring(0, indexOfComma).replaceFirst("'", "").replaceFirst('"', ''));
       }
     });
     return map;
