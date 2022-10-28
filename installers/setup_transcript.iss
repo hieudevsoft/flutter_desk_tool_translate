@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ToolTranslateHieuBui"
-#define MyAppVersion "1.2"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "hieubuiEup, Inc."
 #define MyAppExeName "tool_translate.exe"
 
@@ -19,7 +19,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=D:\dev\flutter\tool_translate\installers
-OutputBaseFilename=tool_translate_1.2
+OutputBaseFilename=tool_translate_1.3
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern

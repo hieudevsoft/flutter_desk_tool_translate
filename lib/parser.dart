@@ -37,8 +37,8 @@ abstract class Parser {
       if (element.isNotEmpty && element.contains('=')) {
         final key = element.split('=')[0];
         final value = element.split('=')[1];
-        final indexOfComma = element.split('=')[1].lastIndexOf(';');
-        map.putIfAbsent('$key = #', () => value.substring(0, indexOfComma).replaceFirst("'", "").replaceFirst('"', ''));
+        final valuePush = value.substring(0, value.length - 2);
+        map.putIfAbsent('$key = #', () => valuePush.replaceFirst("'", "").replaceFirst('"', ''));
       }
     });
     return map;

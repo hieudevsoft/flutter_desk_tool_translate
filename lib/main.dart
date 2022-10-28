@@ -214,7 +214,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       Text(_nameFile),
                       Visibility(
                         visible: _nameFile.isEmpty,
-                        child: const Icon(Icons.add_rounded),
+                        child: const Icon(
+                          Icons.add_rounded,
+                          color: Colors.green,
+                        ),
                       ),
                       const Icon(Icons.file_open_rounded),
                     ],
@@ -358,13 +361,17 @@ class _MyHomePageState extends State<MyHomePage> {
                                       });
                                     });
                                   },
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.download_rounded,
-                                    color: Colors.white,
+                                    color: Colors.yellow.shade600,
                                   ),
                                 )
                               : e.status == 1
-                                  ? const CircularProgressIndicator()
+                                  ? SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(color: Colors.yellow.shade600),
+                                    )
                                   : Icon(
                                       Icons.download_done,
                                       color: Colors.green.shade300,
@@ -499,7 +506,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           title: const Text('Select language'),
           icon: const Icon(Icons.language_rounded),
-          iconColor: Colors.white70,
+          iconColor: Colors.green.shade400,
         );
       },
     );
